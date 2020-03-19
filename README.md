@@ -2,8 +2,10 @@
 
 This is a little app to resize an image to an aspect ratio (either 1:1, 16:9 or 9:16) and blur the image in the background.
 
+<p align="center">
 <img src="https://raw.githubusercontent.com/idkwhatusernameuse/Backblur/master/art/1.jpg" height="300"/>
-<img src="https://raw.githubusercontent.com/idkwhatusernameuse/Backblur/master/art/1.jpg" height="300"/>
+<img src="https://raw.githubusercontent.com/idkwhatusernameuse/Backblur/master/art/2.jpg" height="300"/>
+</p>
 
 This still has some bugs.
 
