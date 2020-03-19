@@ -7,8 +7,6 @@ This is a little (extremely simple) app to resize an image to an aspect ratio (e
 <img src="https://raw.githubusercontent.com/idkwhatusernameuse/Backblur/master/art/2.jpg" height="300"/>
 </p>
 
-This still has some bugs.
-
 ## Download
 
 Probably soon on Google Play, but you can download it on the [Releases page](https://github.com/idkwhatusernameuse/Backblur/releases)
