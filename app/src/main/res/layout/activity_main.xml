@@ -47,6 +47,7 @@
                 tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
             <include
+                android:id="@+id/bottom"
                 layout="@layout/layout_bottom_buttons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

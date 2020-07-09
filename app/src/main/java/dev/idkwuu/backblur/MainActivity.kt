@@ -51,32 +51,31 @@ class MainActivity : AppCompatActivity() {
     private var selectedSize = 0
 
     private fun setButtons() {
-        val chooseImage = findViewById<Button>(R.id.chooseImage)
-        chooseImage.setOnClickListener {
+        val topButtons = findViewById<View>(R.id.top)
+
+        topButtons.findViewById<Button>(R.id.chooseImage).setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             startActivityForResult(intent, IMAGE_PICK_CODE)
         }
 
-        val imageSize = findViewById<Button>(R.id.imageSize)
-        imageSize.setOnClickListener {
+        topButtons.findViewById<ImageButton>(R.id.licenses).setOnClickListener {
+            startActivity(Intent(this, OssLicensesMenuActivity::class.java))
+        }
+
+        val bottomButtons = findViewById<View>(R.id.bottom)
+
+        bottomButtons.findViewById<Button>(R.id.imageSize).setOnClickListener {
             openImageSizeDialog()
         }
 
-        val blurRadius = findViewById<Button>(R.id.blurRadius)
-        blurRadius.setOnClickListener {
+        bottomButtons.findViewById<Button>(R.id.blurRadius).setOnClickListener {
             openBlurSlider()
         }
 
-        val save = findViewById<Button>(R.id.save)
-        save.setOnClickListener {
+        bottomButtons.findViewById<Button>(R.id.save).setOnClickListener {
             permissionSetup()
             saveImage()
-        }
-
-        val licenses = findViewById<Button>(R.id.licenses)
-        licenses.setOnClickListener {
-            startActivity(Intent(this, OssLicensesMenuActivity::class.java))
         }
     }
 
@@ -162,8 +161,8 @@ class MainActivity : AppCompatActivity() {
             val inputStream = data?.data?.let { contentResolver.openInputStream(it) }
             originalImage = BitmapFactory.decodeStream(inputStream)
             previewImage()
-            val imageEditor = findViewById<ConstraintLayout>(R.id.imageEditor)
-            imageEditor.visibility = View.VISIBLE
+            findViewById<ImageView>(R.id.image).visibility = View.VISIBLE
+            findViewById<View>(R.id.bottom).visibility = View.VISIBLE
             inputStream!!.close()
         }
     }
@@ -172,10 +171,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun previewImage() {
         exportBitmap = Blur().blur(this@MainActivity, originalImage, blurRadius, outputWidth, outputHeight)
-        val preview = findViewById<ImageView>(R.id.image)
-        preview.setImageBitmap(exportBitmap)
+        findViewById<ImageView>(R.id.image).setImageBitmap(exportBitmap)
     }
 
+    @Suppress("DEPRECATION")
     @Throws(IOException::class)
     private fun saveImage(){
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
@@ -269,15 +268,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun permissionSetup() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermissionCompat(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestStoragePermission()
+        // Only ask for permission on versions between Android 6.0 and 9.0
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+            && Build.VERSION.SDK_INT <= Build.VERSION_CODES.P
+            && checkSelfPermissionCompat(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+                requestStoragePermission()
         }
     }
 
     private fun requestStoragePermission() {
         if (shouldShowRequestPermissionRationaleCompat(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            requestPermissionsCompat(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
-        } else {
             requestPermissionsCompat(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
         }
     }

@@ -7,7 +7,8 @@
     app:alignContent="center"
     app:alignItems="center"
     app:flexWrap="wrap"
-    app:justifyContent="center">
+    app:justifyContent="center"
+    android:padding="8dp">
 
     <Button
         android:id="@+id/imageSize"
