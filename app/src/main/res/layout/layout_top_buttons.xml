@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.flexbox.FlexboxLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:id="@+id/top"
+    app:alignContent="center"
+    app:alignItems="center"
+    app:flexWrap="wrap"
+    app:justifyContent="center">
+
+    <Button
+        android:id="@+id/chooseImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/choose_image"
+        app:icon="@drawable/ic_insert_photo" />
+
+    <ImageButton
+        android:id="@+id/licenses"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/roundcorners"
+        android:padding="6dp"
+        android:src="@drawable/ic_info"
+        android:tint="@drawable/mtrl_btn_text_color_selector" />
+</com.google.android.flexbox.FlexboxLayout>

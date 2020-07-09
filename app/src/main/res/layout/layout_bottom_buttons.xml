@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.flexbox.FlexboxLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    app:alignContent="center"
+    app:alignItems="center"
+    app:flexWrap="wrap"
+    app:justifyContent="center">
+
+    <Button
+        android:id="@+id/imageSize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/image_size"
+        app:icon="@drawable/ic_photo_size" />
+
+    <Button
+        android:id="@+id/blurRadius"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/blur_radius"
+        app:icon="@drawable/ic_blur" />
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/save"
+        app:icon="@drawable/ic_save" />
+</com.google.android.flexbox.FlexboxLayout>
