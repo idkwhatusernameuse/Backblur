@@ -1,4 +1,4 @@
-package idkwuu.backblur
+package dev.idkwuu.backblur
 
 import android.content.Context
 import android.graphics.Bitmap

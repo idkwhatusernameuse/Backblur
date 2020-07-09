@@ -1,4 +1,4 @@
-package idkwuu.backblur
+package dev.idkwuu.backblur
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat

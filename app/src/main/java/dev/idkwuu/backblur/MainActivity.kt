@@ -1,4 +1,4 @@
-package idkwuu.backblur
+package dev.idkwuu.backblur
 
 import android.Manifest
 import android.app.Activity
