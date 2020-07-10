@@ -1,6 +1,7 @@
 package dev.idkwuu.backblur
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
@@ -9,6 +10,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -23,6 +25,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.snackbar.Snackbar
 import java.io.File
@@ -33,6 +36,9 @@ import java.io.OutputStream
 class MainActivity : AppCompatActivity() {
     private var outputWidth = 2048
     private var outputHeight = 2048
+    private var originalImage: Bitmap? = null
+    private var blurredImage: Bitmap? = null
+    private var isOpeningNewActivity = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +48,29 @@ class MainActivity : AppCompatActivity() {
         setButtons()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (originalImage != null && !isOpeningNewActivity) {
+            outState.putString("originalImage", ImageUtil.convertToBase64(originalImage!!))
+            outState.putString("blurredImage", ImageUtil.convertToBase64(blurredImage!!))
+        }
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        if (!isOpeningNewActivity) {
+            try {
+                originalImage = ImageUtil.convertToBitmap(savedInstanceState.get("originalImage").toString())
+                blurredImage = ImageUtil.convertToBitmap(savedInstanceState.get("blurredImage").toString())
+                findViewById<ImageView>(R.id.image).setImageBitmap(blurredImage)
+                findViewById<View>(R.id.bottom).visibility = View.VISIBLE
+                findViewById<ImageView>(R.id.image).visibility = View.VISIBLE
+            } catch (e: Exception) {
+                // idfc k thx
+            }
+        }
+        isOpeningNewActivity = false
+    }
     companion object {
         private const val IMAGE_PICK_CODE = 1000
     }
@@ -60,6 +89,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         topButtons.findViewById<ImageButton>(R.id.licenses).setOnClickListener {
+            isOpeningNewActivity = true
             startActivity(Intent(this, OssLicensesMenuActivity::class.java))
         }
 
@@ -79,6 +109,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun openBlurSlider() {
         val dialog = Dialog(this)
         dialog.setTitle(R.string.blur_radius)
@@ -103,10 +134,17 @@ class MainActivity : AppCompatActivity() {
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
+                if (progress == 0) {
+                    progressText.setTextColor(ContextCompat.getColor(applicationContext, R.color.redText))
+                    select.isEnabled = false
+                } else {
+                    progressText.setTextColor(ContextCompat.getColor(applicationContext, android.R.color.white))
+                    progressBlur = progress
+                    select.isEnabled = true
+                }
                 progressText.text = "$progress%"
-                progressBlur = progress
             }
-            override fun onStartTrackingTouch(seek: SeekBar) {}
+            override fun onStartTrackingTouch(seek: SeekBar) { }
             override fun onStopTrackingTouch(seek: SeekBar) {}
         })
 
@@ -153,7 +191,6 @@ class MainActivity : AppCompatActivity() {
         dialogBuilder.create().show()
     }
 
-    private lateinit var originalImage: Bitmap
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -167,11 +204,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private lateinit var exportBitmap: Bitmap
-
     private fun previewImage() {
-        exportBitmap = Blur().blur(this@MainActivity, originalImage, blurRadius, outputWidth, outputHeight)
-        findViewById<ImageView>(R.id.image).setImageBitmap(exportBitmap)
+        blurredImage = Blur().blur(this@MainActivity, originalImage!!, blurRadius, outputWidth, outputHeight)
+        findViewById<ImageView>(R.id.image).setImageBitmap(blurredImage)
     }
 
     @Suppress("DEPRECATION")
@@ -187,7 +222,7 @@ class MainActivity : AppCompatActivity() {
                 try {
                     try {
                         file.createNewFile()
-                        exportBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                        blurredImage!!.compress(Bitmap.CompressFormat.PNG, 100, out)
                     } catch (e: Exception) {
                         openErrorSaving()
                     }
@@ -229,7 +264,7 @@ class MainActivity : AppCompatActivity() {
                     throw IOException("Failed to get output stream.")
                 }
 
-                if (!exportBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream))
+                if (!blurredImage!!.compress(Bitmap.CompressFormat.PNG, 100, stream))
                 {
                     throw IOException("Failed to save bitmap.")
                 }
